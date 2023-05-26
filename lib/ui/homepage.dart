@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:preresponsi/ui/page_detail_character.dart';
+import 'package:preresponsi/ui/page_detail_weapon.dart';
 import 'package:preresponsi/ui/page_list_character.dart';
 import 'package:preresponsi/ui/page_list_weapon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,9 +14,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? _lastSeen;
+  String? _type;
 
-  addSF() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  _getLastSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _lastSeen = prefs.getString('last_seen');
+      _type = prefs.getString('type');
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _lastSeen = "";
+    _type = "";
+    _getLastSeen();
   }
 
   @override
@@ -22,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
         child: Scaffold(
           body: Container(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 100.0),
+            padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -33,9 +49,36 @@ class _HomePageState extends State<HomePage> {
               )
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset('assets/logo-genshin.png'),
+                Image.asset('assets/logo-genshin.png', width: 350.0),
+                if(_lastSeen != null && _lastSeen != "")
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                    child: Card(
+                      child: ListTile(
+                        onTap: () async {
+                          if (_type == "weapons") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PageDetailWeapon(name: _lastSeen!),
+                                )
+                            );
+                          }else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PageDetailCharacter(name: _lastSeen!),
+                                )
+                            );
+                          }
+                        },
+                        leading: Image.network('https://api.genshin.dev/${_type}/${_lastSeen!.toLowerCase()}/icon'),
+                        title: Text(_lastSeen.toString().toUpperCase()),
+                      ),
+                    ),
+                  ),
                 Container(
                   child: Column(
                     children: [

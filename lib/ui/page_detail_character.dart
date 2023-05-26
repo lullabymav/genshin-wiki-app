@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:preresponsi/model/detail_char_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../base/api_data_source.dart';
 
 class PageDetailCharacter extends StatefulWidget {
@@ -11,6 +12,18 @@ class PageDetailCharacter extends StatefulWidget {
 }
 
 class _PageDetailCharacterState extends State<PageDetailCharacter> {
+
+  _lastSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('last_seen', widget.name);
+    prefs.setString('type', 'characters');
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _lastSeen();
+  }
 
   // capitalized the first letter in a word / sentence
   String capitalized(){

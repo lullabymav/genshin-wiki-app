@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:preresponsi/base/api_data_source.dart';
-import 'package:preresponsi/ui/page_detail_character.dart';
 import 'package:preresponsi/ui/page_detail_weapon.dart';
 
 class PageListWeapon extends StatefulWidget {
